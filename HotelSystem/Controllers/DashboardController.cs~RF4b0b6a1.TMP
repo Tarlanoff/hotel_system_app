@@ -1,0 +1,32 @@
+﻿using HotelSystem.Helper;
+using HotelSystem.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace HotelSystem.Controllers
+{
+    [AuthLogin]
+    public class DashboardController : BaseController
+    {
+        // GET: Dashboard
+        public ActionResult Index()
+        {
+            var list = _context.Rooms.Include("BedType").OrderBy(r => r.Id).ToList();
+            return View(list);
+        }
+
+        public ActionResult CheckOut()
+        {
+            return View();
+        }
+
+        public ActionResult Logout(User user)
+        {
+            Response.Cookies.Remove();
+            return RedirectToAction("index");
+        }
+    }
+}

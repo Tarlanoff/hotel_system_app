@@ -1,0 +1,85 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using HotelSystem.Models;
+using HotelSystem.Data;
+
+namespace HotelSystem.Controllers
+{
+    public class OrderController : BaseController
+    {
+        // GET: Restorant
+        public ActionResult Index()
+        {
+            var list = _context.Orders.Include("Room").Include("Menu").OrderByDescending(p => p.Id).ToList();
+            return View(list);
+        }
+        public ActionResult Create()
+        {
+            ViewBag.Room = _context.Rooms.OrderByDescending(r => r.Number).ToList();
+            ViewBag.Menu = _context.Menus.OrderByDescending(r => r.Name).ToList();
+            return View();
+
+        }
+        [HttpPost]
+        public ActionResult Create(Orders Order)
+        {
+
+            if (ModelState.IsValid)
+            {
+                _context.Orders.Add(Order);
+                _context.SaveChanges();
+                return RedirectToAction("index");
+            }
+            return View();
+
+        }
+        public ActionResult Edit(int Id)
+        {
+
+            Orders restorantPrice = _context.Orders.Find(Id);
+
+            if (restorantPrice == null)
+            {
+                return HttpNotFound();
+
+            }
+            ViewBag.Room = _context.Rooms.OrderByDescending(r => r.Number).ToList();
+            ViewBag.Menu = _context.Menus.OrderByDescending(r => r.Name).ToList();
+
+            return View(restorantPrice);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Orders orders)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Entry(orders).State = System.Data.Entity.EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("index");
+            }
+            ViewBag.Room = _context.Rooms.OrderByDescending(r => r.Number).ToList();
+            ViewBag.Menu = _context.Menus.OrderByDescending(r => r.Name).ToList();
+            return View(orders);
+
+        }
+
+
+        public ActionResult Delete(int id)
+        {
+            Orders ord = _context.Orders.Find(id);
+
+            if (ord == null)
+            {
+                return HttpNotFound();
+            }
+
+            _context.Orders.Remove(ord);
+            _context.SaveChanges();
+            return RedirectToAction("index");
+        }
+    }
+}

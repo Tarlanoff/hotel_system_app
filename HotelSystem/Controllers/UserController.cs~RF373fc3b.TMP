@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using HotelSystem.Models;
+
+namespace HotelSystem.Controllers
+{
+    public class UserController : BaseController
+    {
+        // GET: User
+        public ActionResult Index()
+        {
+            var list = _context.Users.Include("Group").OrderByDescending(u => u.Id).ToList();
+            return View(list);
+        }
+        public ActionResult Create()
+        {
+            ViewBag.Groups = _context.Groups.ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return RedirectToAction("index");
+            }
+
+
+            return View(user);
+        }
+
+
+        public ActionResult Edit(int id)
+        {
+            User user = _context.Users.Find(id);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Groups = _context.Groups.ToList();
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                _context.SaveChanges();
+                return RedirectToAction("index");
+            }
+
+            ViewBag.Groups = _context.Groups.OrderBy(g => g.Name).ToList();
+            return View(user);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            User user = _context.Users.Find(id);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return RedirectToAction("index");
+        }
+    }
+}

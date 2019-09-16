@@ -1,0 +1,32 @@
+﻿@model HotelSystem.Models.Customer
+    @{
+        ViewBag.Title = "CheckOut";
+    }
+
+    <div class="page">
+        <div id="room">
+
+            <div class="header">
+                <div class="row">
+                    <div class="col-9">
+                        <h1><i class="fas fa-hotel"></i>Yeni Otaq Yarat</h1>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(m => m.Fullname)
+                            @Html.TextBoxFor(m => m.Fullname, null, new { @class = "form-control", type = "readonly" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
